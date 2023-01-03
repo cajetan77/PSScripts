@@ -1,9 +1,11 @@
 Connect-PnpOnline -Url "https://ilcnz.sharepoint.com/sites/cTasman" -Interactive
 <#Content fropm template site#>
-$searchv4Results=Get-PnPPageComponent -Page "Tasman District Council" |  Where-Object { $_.PropertiesJson -like'*Case*' -and $_.Title -eq 'PnP - Search Results'}
-$searchv4Filter=Get-PnPPageComponent -Page "Tasman District Council" |  Where-Object { $_.Title -like'PnP - Search Filters'}
+$sourceweb=Get-PnpWeb
+$searchv4Results=Get-PnPPageComponent -Page $sourceweb.Title |  Where-Object { $_.PropertiesJson -like'*Case*' -and $_.Title -eq 'PnP - Search Results'}
+$searchv4Filter=Get-PnPPageComponent -Page $sourceweb.Title |  Where-Object { $_.Title -like'PnP - Search Filters'}
+Disconnect-PnPOnline
 <#Content from client site#>
-Connect-PnpOnline -Url "https://ilcnz.sharepoint.com/sites/cToyotaNZ" -Interactive
+Connect-PnpOnline -Url "https://ilcnz.sharepoint.com/sites/c2Degrees" -Interactive
 $web=Get-PnpWeb
 $searchv3Results=Get-PnPPageComponent -Page $web.Title |  Where-Object { $_.PropertiesJson -like'*Case*' -and $_.Title -eq 'Search Results'}
 $searchv3Filter=Get-PnPPageComponent -Page $web.Title |  Where-Object { $_.Title -like'Search Refiners'}
@@ -41,17 +43,22 @@ $oldresultds=$searchv4Results.WebPartId+"."+$searchv4Results.InstanceId.Guid
 $resultds=$newWebPartResults.WebPartId+"."+$newWebPartResults.InstanceId.Guid
 $searchV4FilterJson=$searchv4Filter.PropertiesJson.Replace($oldresultds,$resultds)
 
+#$webpartv4 = Get-PnPClientSideComponent -Page $web.Title -InstanceId 7abe2ee5-9d45-4225-8ed5-6ccf67a84bcc 
+$customerName=Get-PnPPropertyBag -Key "ILDS.Case"
+
+
 if($newWebPartResults)
 {
 Set-PnPPageWebPart -Page $web.Title  -Identity $newWebPartResults.InstanceId -PropertiesJson $searchv4Results.PropertiesJson
 Set-PnPPageWebPart -Page $web.Title -Identity $newWebPartResults.InstanceId -PropertiesJson $searchV4resultsJson
+Set-PnPClientSideWebPart -Page $web.Title -Identity $searchv4Results.InstanceId -PropertiesJson $searchv4Results.PropertiesJson.Replace("Tasman District Council",$customerName)
 }
 
 
 
 if($newWebPartFilter)
 {
-Set-PnPPageWebPart -Page "PrimePort Timaru"  -Identity $newWebPartFilter.InstanceId -PropertiesJson $searchv4Filter.PropertiesJson
-Set-PnPPageWebPart -Page "PrimePort Timaru"  -Identity $newWebPartFilter.InstanceId -PropertiesJson $searchV4filterJson
+Set-PnPPageWebPart -Page $web.Title  -Identity $newWebPartFilter.InstanceId -PropertiesJson $searchv4Filter.PropertiesJson
+Set-PnPPageWebPart -Page $web.Title  -Identity $newWebPartFilter.InstanceId -PropertiesJson $searchV4filterJson
 }
 
