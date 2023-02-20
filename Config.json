@@ -1,0 +1,20 @@
+{
+  "AppId": {
+    "IWorkplaceHigh": {
+      "StoredCred": "cajesharepointHigh"
+    },
+    "IWorkplaceLow": {
+      "StoredCred": "cajesharepointLow"
+    },
+    "IWorkplaceMedium": {
+      "StoredCred": "cajesharepointMedium"
+    }
+  },
+  "Accounts": {
+    "TenantName": "cajesharepoint",
+    "ServiceAccount": "ILService@cajesharepoint.onmicrosoft.com",
+    "ECMAccount": "ECMAdmin@cajesharepoint.onmicrosoft.com",
+    "FlowAccount": "Flow.Admin@cajesharepoint.onmicrosoft.com",
+    "B2BAccount": "IL Support"
+  }
+}
